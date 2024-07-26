@@ -99,22 +99,22 @@ fn is_unrooted_ty<'tcx>(
                     } else {
                         true
                     }
-                } else if match_def_path(cx, did.did(), &[sym::core, sym.cell, sym.Ref]) ||
-                    match_def_path(cx, did.did(), &[sym::core, sym.cell, sym.RefMut]) ||
-                    match_def_path(cx, did.did(), &[sym::core, sym::slice, sym::iter, sym.Iter]) ||
-                    match_def_path(
+                } else if match_def_path(cx, did.did(), &[sym::core, sym.cell, sym.Ref])
+                    || match_def_path(cx, did.did(), &[sym::core, sym.cell, sym.RefMut])
+                    || match_def_path(cx, did.did(), &[sym::core, sym::slice, sym::iter, sym.Iter])
+                    || match_def_path(
                         cx,
                         did.did(),
                         &[sym::core, sym::slice, sym::iter, sym.IterMut],
-                    ) ||
-                    match_def_path(cx, did.did(), &[sym.accountable_refcell, sym.Ref]) ||
-                    match_def_path(cx, did.did(), &[sym.accountable_refcell, sym.RefMut]) ||
-                    match_def_path(
+                    )
+                    || match_def_path(cx, did.did(), &[sym.accountable_refcell, sym.Ref])
+                    || match_def_path(cx, did.did(), &[sym.accountable_refcell, sym.RefMut])
+                    || match_def_path(
                         cx,
                         did.did(),
                         &[sym::std, sym.collections, sym.hash, sym.map, sym.Entry],
-                    ) ||
-                    match_def_path(
+                    )
+                    || match_def_path(
                         cx,
                         did.did(),
                         &[
@@ -124,8 +124,8 @@ fn is_unrooted_ty<'tcx>(
                             sym.map,
                             sym.OccupiedEntry,
                         ],
-                    ) ||
-                    match_def_path(
+                    )
+                    || match_def_path(
                         cx,
                         did.did(),
                         &[
@@ -135,13 +135,13 @@ fn is_unrooted_ty<'tcx>(
                             sym.map,
                             sym.VacantEntry,
                         ],
-                    ) ||
-                    match_def_path(
+                    )
+                    || match_def_path(
                         cx,
                         did.did(),
                         &[sym::std, sym.collections, sym.hash, sym.map, sym.Iter],
-                    ) ||
-                    match_def_path(
+                    )
+                    || match_def_path(
                         cx,
                         did.did(),
                         &[sym::std, sym.collections, sym.hash, sym.set, sym.Iter],
@@ -256,8 +256,8 @@ impl<'tcx> LateLintPass<'tcx> for UnrootedPass {
                 }
             }
 
-            if !in_new_function &&
-                is_unrooted_ty(&self.symbols, cx, sig.output().skip_binder(), false)
+            if !in_new_function
+                && is_unrooted_ty(&self.symbols, cx, sig.output().skip_binder(), false)
             {
                 cx.lint(UNROOTED_MUST_ROOT, "Type must be rooted", |lint| {
                     lint.span(decl.output.span());
@@ -329,8 +329,8 @@ impl<'a, 'tcx> visit::Visitor<'tcx> for FnDefVisitor<'a, 'tcx> {
         // are implemented, the `Unannotated` case could cause false-positives.
         // These should be fixable by adding an explicit `ref`.
         match pat.kind {
-            hir::PatKind::Binding(hir::BindingAnnotation::NONE, ..) |
-            hir::PatKind::Binding(hir::BindingAnnotation::MUT, ..) => {
+            hir::PatKind::Binding(hir::BindingMode::NONE, ..)
+            | hir::PatKind::Binding(hir::BindingMode::MUT, ..) => {
                 let ty = cx.typeck_results().pat_ty(pat);
                 if is_unrooted_ty(self.symbols, cx, ty, self.in_new_function) {
                     cx.lint(

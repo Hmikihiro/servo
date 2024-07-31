@@ -35,7 +35,7 @@ on:
         type: boolean
 
 env:
-  RUST_BACKTRACE: 1
+  RUST_BACKTRACE: full
   SHELL: /bin/bash
   CCACHE: "ccache"
   CARGO_TARGET_DIR: C:\\a\\servo\\servo\\target

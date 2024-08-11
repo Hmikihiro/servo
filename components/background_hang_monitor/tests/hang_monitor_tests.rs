@@ -5,7 +5,7 @@
 #![allow(unused_imports)]
 
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, LazyLock, Mutex};
 use std::thread;
 use std::time::Duration;
 
@@ -17,9 +17,7 @@ use background_hang_monitor_api::{
 use base::id::TEST_PIPELINE_ID;
 use ipc_channel::ipc;
 
-lazy_static::lazy_static! {
-    static ref SERIAL: Mutex<()> = Mutex::new(());
-}
+static SERIAL: LazyLock<Mutex<()>> = LazyLock::new(|| Mutex::new(()));
 
 #[test]
 fn test_hang_monitoring() {

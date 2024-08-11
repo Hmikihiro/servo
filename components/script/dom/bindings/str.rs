@@ -9,13 +9,13 @@ use std::hash::{Hash, Hasher};
 use std::marker::PhantomData;
 use std::ops::{Deref, DerefMut};
 use std::str::FromStr;
+use std::sync::LazyLock;
 use std::{fmt, ops, str};
 
 use chrono::prelude::{Utc, Weekday};
 use chrono::{Datelike, TimeZone};
 use cssparser::CowRcStr;
 use html5ever::{LocalName, Namespace};
-use lazy_static::lazy_static;
 use num_traits::Zero;
 use regex::Regex;
 use servo_atoms::Atom;
@@ -430,10 +430,9 @@ impl DOMString {
 
     /// <https://html.spec.whatwg.org/multipage/#valid-floating-point-number>
     pub fn is_valid_floating_point_number_string(&self) -> bool {
-        lazy_static! {
-            static ref RE: Regex =
-                Regex::new(r"^-?(?:\d+\.\d+|\d+|\.\d+)(?:(e|E)(\+|\-)?\d+)?$").unwrap();
-        }
+        static RE: LazyLock<Regex> = LazyLock::new(|| {
+            Regex::new(r"^-?(?:\d+\.\d+|\d+|\.\d+)(?:(e|E)(\+|\-)?\d+)?$").unwrap()
+        });
         RE.is_match(&self.0) && self.parse_floating_point_number().is_some()
     }
 

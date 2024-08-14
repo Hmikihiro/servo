@@ -53,7 +53,7 @@ use tokio_rustls::{self, TlsAcceptor};
 use tokio_stream::wrappers::TcpListenerStream;
 use tokio_test::block_on;
 
-pub static HANDLE: LazyLock<Mutex<Runtime>> = LazyLock(|| {
+pub static HANDLE: LazyLock<Mutex<Runtime>> = LazyLock::new(|| {
     Mutex::new(
         Builder::new_multi_thread()
             .enable_io()

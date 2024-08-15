@@ -6099,7 +6099,6 @@ dependencies = [
  "embedder_traits",
  "euclid",
  "getopts",
- "lazy_static",
  "log",
  "num_cpus",
  "serde",
